@@ -1,2 +1,2 @@
-# git-crypt: synced course content is ciphertext on GitHub; code stays readable.
-public/content/** filter=git-crypt diff=git-crypt merge=git-crypt
+# git-crypt: private docs are ciphertext on GitHub; public docs and code stay readable.
+public/content/private/** filter=git-crypt diff=git-crypt merge=git-crypt

@@ -34,6 +34,31 @@ viewer: docs under `/content/`, index at `/content/manifest.json`,
 regenerates `manifest.json`, `README.md`, `_sidebar.md`. `dev` and `deploy`
 run sync first.
 
+## Public vs private
+
+Docs are **private by default**. Opt a doc into the public zone with
+frontmatter:
+
+```markdown
+---
+visibility: public
+---
+```
+
+| Zone    | Emitted to                | Served at                 | Access                          |
+| ------- | ------------------------- | ------------------------- | ------------------------------- |
+| public  | `public/content/<path>`   | `/content/<path>`         | anyone                          |
+| private | `public/content/private/` | `/content/private/<path>` | Cloudflare Access JWT, else 403 |
+
+Enforcement is Worker-side (`run_worker_first`), so private files 403 even
+if the Access app is missing or misconfigured. `ACCESS_AUD` (wrangler var)
+must equal the Access app's AUD tag for private requests to verify; unset
+means the private zone is closed to everyone.
+
+`public/content/private/**` is git-crypt encrypted on commit; titles and
+paths are listed in the public `manifest.json` (filenames stay visible on
+GitHub regardless).
+
 ## Commands
 
 ```bash
@@ -45,11 +70,13 @@ pnpm run typecheck
 
 ## Security
 
-- `public/content/**` is git-crypt encrypted. Unlock on a new clone:
+- `public/content/private/**` is git-crypt encrypted. Unlock on a new clone:
   `git-crypt unlock <key-path>/train-docs.git-crypt.key` (key in workspace
   store `config/projects/train-docs/secrets/`).
-- `train.devartslab.com` sits behind a Cloudflare Access self-hosted app
-  (policy: Cloudflare account members).
+- Access app `train-docs` (self-hosted) covers
+  `train.devartslab.com/content/private` only; policy: Cloudflare account
+  members. Worker independently verifies the JWT (`ACCESS_AUD`), so the
+  private zone fails closed if the app is removed.
 
 ## License
 
