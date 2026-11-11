@@ -1,0 +1,2 @@
+# git-crypt: synced course content is ciphertext on GitHub; code stays readable.
+public/content/** filter=git-crypt diff=git-crypt merge=git-crypt

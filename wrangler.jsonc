@@ -1,0 +1,30 @@
+/**
+ * ============================================================================
+ * train-docs - markdown docs viewer behind Cloudflare Access
+ * ============================================================================
+ * train.devartslab.com -> Workers Static Assets
+ *   /                -> viewers/<VIEWER>/index.html (plug-and-play shell)
+ *   /content/**      -> synced markdown from ../train/
+ * ============================================================================
+ */
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "train-docs",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-11",
+  "compatibility_flags": ["nodejs_compat"],
+
+  "assets": { "directory": "./public/", "binding": "ASSETS" },
+
+  "routes": [{ "pattern": "train.devartslab.com", "custom_domain": true }],
+
+  "vars": {
+    "DOCS_HOSTNAME": "train.devartslab.com",
+    "VIEWER": "docsify",
+  },
+
+  "observability": {
+    "enabled": true,
+    "traces": { "enabled": true },
+  },
+}

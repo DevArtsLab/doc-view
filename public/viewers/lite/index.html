@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>train-docs (lite)</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5/github-markdown-light.css">
+  <style>
+    body { display: flex; margin: 0; font-family: system-ui, sans-serif; }
+    nav { width: 260px; min-height: 100vh; padding: 1rem; border-right: 1px solid #e1e4e8; box-sizing: border-box; }
+    nav a { display: block; padding: .25rem 0; color: #0969da; text-decoration: none; }
+    nav a.active { font-weight: 600; }
+    main { flex: 1; padding: 2rem; max-width: 860px; }
+  </style>
+</head>
+<body>
+  <nav id="nav"></nav>
+  <main class="markdown-body" id="doc"></main>
+  <script src="https://cdn.jsdelivr.net/npm/marked@15/marked.min.js"></script>
+  <script>
+    const nav = document.getElementById('nav');
+    const docEl = document.getElementById('doc');
+
+    async function show(path) {
+      const res = await fetch('/content/' + path);
+      docEl.innerHTML = res.ok
+        ? marked.parse(await res.text())
+        : '<h1>404</h1><p>' + path + '</p>';
+      for (const a of nav.querySelectorAll('a'))
+        a.classList.toggle('active', a.dataset.path === path);
+      location.hash = '/' + path;
+    }
+
+    const manifest = await (await fetch('/content/manifest.json')).json();
+    for (const d of manifest.docs) {
+      const a = document.createElement('a');
+      a.href = '#/' + d.path;
+      a.dataset.path = d.path;
+      a.textContent = d.title;
+      nav.appendChild(a);
+    }
+    window.addEventListener('hashchange', () =>
+      show(location.hash.replace(/^#\//, '') || manifest.docs[0].path));
+    show(location.hash.replace(/^#\//, '') || manifest.docs[0].path);
+  </script>
+</body>
+</html>
