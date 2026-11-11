@@ -1,3 +1,2 @@
 # train
 
-- [AI Solutions Developer - Per Scholas](private/perscholas/2026-11-ai-solutions-developer.md) :lock:

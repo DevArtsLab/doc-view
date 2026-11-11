@@ -55,9 +55,11 @@ if the Access app is missing or misconfigured. `ACCESS_AUD` (wrangler var)
 must equal the Access app's AUD tag for private requests to verify; unset
 means the private zone is closed to everyone.
 
-`public/content/private/**` is git-crypt encrypted on commit; titles and
-paths are listed in the public `manifest.json` (filenames stay visible on
-GitHub regardless).
+`public/content/private/**` is git-crypt encrypted on commit. Public index
+files (`manifest.json`, `README.md`, `_sidebar.md`) list public docs only;
+the private zone keeps its own index inside `private/` (encrypted in git,
+Access-gated on the site). Note: git-crypt never hides filenames - keep
+doc filenames non-sensitive.
 
 ## Commands
 

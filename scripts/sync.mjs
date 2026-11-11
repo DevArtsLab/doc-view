@@ -74,41 +74,45 @@ const entries = docs.map((p) => {
 
 const pub = entries.filter((e) => e.visibility === "public");
 const priv = entries.filter((e) => e.visibility === "private");
+const generated = new Date().toISOString();
 
+// Public indexes list public docs only: private titles/paths must not leak
+// into plaintext files (repo is public; /content/manifest.json is served open).
 writeFileSync(
   join(out, "manifest.json"),
-  JSON.stringify({ generated: new Date().toISOString(), docs: entries }, null, 2) +
-    "\n",
+  JSON.stringify({ generated, docs: pub }, null, 2) + "\n",
 );
-
 writeFileSync(
   join(out, "README.md"),
-  [
-    "# train",
-    "",
-    ...pub.map((e) => `- [${e.title}](${e.path})`),
-    ...priv.map((e) => `- [${e.title}](${e.path}) :lock:`),
-    "",
-  ].join("\n"),
+  ["# train", "", ...pub.map((e) => `- [${e.title}](${e.path})`), ""].join("\n"),
 );
-
-// docsify sidebar convention: public zone lists everything (private marked),
-// private zone lists only private docs.
 writeFileSync(
   join(out, "_sidebar.md"),
-  [
-    ...pub.map((e) => `- [${e.title}](${e.path})`),
-    ...priv.map((e) => `- [${e.title}](${e.path}) :lock:`),
-  ].join("\n") + "\n",
+  pub.map((e) => `- [${e.title}](${e.path})`).join("\n") + "\n",
 );
+
 if (priv.length) {
+  // Private indexes live inside the gated zone; paths are relative to it.
+  writeFileSync(
+    join(out, PRIVATE, "manifest.json"),
+    JSON.stringify(
+      { generated, docs: priv.map((e) => ({ ...e, path: e.srcPath })) },
+      null,
+      2,
+    ) + "\n",
+  );
+  writeFileSync(
+    join(out, PRIVATE, "README.md"),
+    [
+      "# train (private)",
+      "",
+      ...priv.map((e) => `- [${e.title}](${e.srcPath})`),
+      "",
+    ].join("\n"),
+  );
   writeFileSync(
     join(out, PRIVATE, "_sidebar.md"),
     priv.map((e) => `- [${e.title}](${e.srcPath})`).join("\n") + "\n",
-  );
-  writeFileSync(
-    join(out, PRIVATE, "manifest.json"),
-    JSON.stringify({ generated: new Date().toISOString(), docs: priv }, null, 2) + "\n",
   );
 }
 

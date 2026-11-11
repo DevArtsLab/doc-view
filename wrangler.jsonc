@@ -24,7 +24,8 @@
     "DOCS_HOSTNAME": "train.devartslab.com",
     "VIEWER": "docsify",
     // Private zone (/content/private/**) fails closed until ACCESS_AUD is set
-    // to the Access app's AUD tag.
+    // to the Access app's AUD tag. AUD is a public identifier, not a secret:
+    // it appears in every Access login redirect and JWT aud claim.
     "ACCESS_TEAM_DOMAIN": "devartslab.cloudflareaccess.com",
     "ACCESS_AUD": "d0dde6dd6eb7f1312d55bccf81ec242b3e67b0fb7bb067df4be77f76be74dcec",
   },
