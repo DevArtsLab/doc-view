@@ -44,7 +44,12 @@
       function accessRedirect(response) {
         if (response.redirected && !response.url.includes("devartslab.com")) {
           const route = location.hash.replace(/^#/, "");
-          if (route && route !== "/") location.href = "/content" + route + ".md";
+          if (!route || route === "/") return response;
+          // Dir route (/private/) -> dir URL (Worker bounces authed users back
+          // to the viewer); doc route -> the raw file URL.
+          location.href = route.endsWith("/")
+            ? "/content" + route
+            : "/content" + route + ".md";
         }
         return response;
       }
