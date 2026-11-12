@@ -7,7 +7,7 @@
   "scripts": {
     "sync": "node scripts/sync.mjs",
     "dev": "node scripts/sync.mjs && wrangler dev",
-    "deploy": "node scripts/sync.mjs && wrangler deploy",
+    "deploy": "node scripts/sync.mjs && wrangler deploy && rm -rf site/content/private",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {

@@ -1,2 +1,0 @@
-# git-crypt: private docs are ciphertext on GitHub; public docs and code stay readable.
-site/content/private/** filter=git-crypt diff=git-crypt merge=git-crypt

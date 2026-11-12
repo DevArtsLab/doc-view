@@ -16,6 +16,7 @@
 !.dev.vars.example
 
 # generated / deploy
+site/content/private/
 node_modules/
 .next/
 out/

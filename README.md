@@ -65,11 +65,14 @@ Viewers list private docs in the nav only after Access auth (they probe the
 gated `private/manifest.json`); anonymous users see a "Private zone" entry
 that starts the login flow.
 
-`site/content/private/**` is git-crypt encrypted on commit. Public index
-files (`manifest.json`, `README.md`, `_sidebar.md`) list public docs only;
-the private zone keeps its own index inside `private/` (encrypted in git,
-Access-gated on the site). Note: git-crypt never hides filenames - keep
-doc filenames non-sensitive.
+`site/content/private/` is **never committed** - it is a gitignored build
+artifact populated by sync for the deploy bundle and removed after
+`pnpm deploy`. Private source docs live in the git-crypt-encrypted
+`DevArtsLab/train-content` repo (ciphertext on GitHub; filenames still
+visible, so keep them non-sensitive). Public index files
+(`manifest.json`, `README.md`, `_sidebar.md`) list public docs only; the
+private zone keeps its own index inside `private/` (generated at sync
+time, Access-gated on the site).
 
 ## Commands
 
@@ -85,9 +88,12 @@ Local dev opens the private zone on loopback (`cf-connecting-ip` is
 
 ## Security
 
-- `site/content/private/**` is git-crypt encrypted. Unlock on a new clone:
-  `git-crypt unlock <key-path>/train-docs.git-crypt.key` (key in workspace
-  store `config/projects/train-docs/secrets/`).
+- Private source docs live in `DevArtsLab/train-content` (public repo,
+  git-crypt encrypted). Unlock on a new machine:
+  `git-crypt unlock <key-path>/train-content.git-crypt.key` (key in
+  workspace store `config/projects/train-content/secrets/`).
+- Nothing private is committed to this repo: `site/content/private/` is
+  gitignored and populated only at sync/deploy time.
 - Access app `train-docs` (self-hosted) covers
   `train.devartslab.com/content/private` only; policy: Cloudflare account
   members. Worker independently verifies the JWT (`ACCESS_AUD`), so the
