@@ -11,7 +11,7 @@ extensionless path to the active viewer shell; everything else passes through
 to assets.
 
 ```text
-/                       -> public/viewers/<VIEWER>/index.html
+/                       -> site/viewers/<VIEWER>/index.html
 /content/**             -> synced markdown from ../train/
 /viewers/<name>/**      -> viewer shells (static)
 ```
@@ -23,14 +23,14 @@ to assets.
 | `docsify` | `/viewers/docsify/` | docsify 4 + emoji plugin (CDN)     |
 | `lite`    | `/viewers/lite/`    | marked + github-markdown-css (CDN) |
 
-Add one: drop `public/viewers/<name>/index.html`, set `VIEWER=<name>` in
+Add one: drop `site/viewers/<name>/index.html`, set `VIEWER=<name>` in
 `wrangler.jsonc` vars (or `--var VIEWER=<name>` at deploy). Contract per
 viewer: docs under `/content/`, index at `/content/manifest.json`,
 `/content/README.md`, `/content/_sidebar.md`.
 
 ## Content
 
-`pnpm run sync` copies `../train/**/*.md` into `public/content/` and
+`pnpm run sync` copies `../train/**/*.md` into `site/content/` and
 regenerates `manifest.json`, `README.md`, `_sidebar.md`. `dev` and `deploy`
 run sync first.
 
@@ -47,15 +47,15 @@ visibility: public
 
 | Zone    | Emitted to                | Served at                 | Access                          |
 | ------- | ------------------------- | ------------------------- | ------------------------------- |
-| public  | `public/content/<path>`   | `/content/<path>`         | anyone                          |
-| private | `public/content/private/` | `/content/private/<path>` | Cloudflare Access JWT, else 403 |
+| public  | `site/content/<path>`   | `/content/<path>`         | anyone                          |
+| private | `site/content/private/` | `/content/private/<path>` | Cloudflare Access JWT, else 403 |
 
 Enforcement is Worker-side (`run_worker_first`), so private files 403 even
 if the Access app is missing or misconfigured. `ACCESS_AUD` (wrangler var)
 must equal the Access app's AUD tag for private requests to verify; unset
 means the private zone is closed to everyone.
 
-`public/content/private/**` is git-crypt encrypted on commit. Public index
+`site/content/private/**` is git-crypt encrypted on commit. Public index
 files (`manifest.json`, `README.md`, `_sidebar.md`) list public docs only;
 the private zone keeps its own index inside `private/` (encrypted in git,
 Access-gated on the site). Note: git-crypt never hides filenames - keep
@@ -72,7 +72,7 @@ pnpm run typecheck
 
 ## Security
 
-- `public/content/private/**` is git-crypt encrypted. Unlock on a new clone:
+- `site/content/private/**` is git-crypt encrypted. Unlock on a new clone:
   `git-crypt unlock <key-path>/train-docs.git-crypt.key` (key in workspace
   store `config/projects/train-docs/secrets/`).
 - Access app `train-docs` (self-hosted) covers

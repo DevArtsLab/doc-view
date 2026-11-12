@@ -5,7 +5,7 @@
 //   /<clean-path> (no ext)  -> viewer shell (history-API viewers)
 //   /<path-with-ext>        -> static asset passthrough (/content/**, /viewers/**)
 //
-// Add a viewer by dropping a directory into public/viewers/<name>/ and
+// Add a viewer by dropping a directory into site/viewers/<name>/ and
 // setting VIEWER=<name> in wrangler.jsonc vars (or --var VIEWER=<name>).
 //
 // Private-zone enforcement is Worker-side and fails closed: without

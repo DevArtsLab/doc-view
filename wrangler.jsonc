@@ -16,7 +16,7 @@
 
   // run_worker_first: the Worker must see every request - it enforces the
   // private zone before assets are served.
-  "assets": { "directory": "./public/", "binding": "ASSETS", "run_worker_first": true },
+  "assets": { "directory": "./site/", "binding": "ASSETS", "run_worker_first": true },
 
   "routes": [{ "pattern": "train.devartslab.com", "custom_domain": true }],
 

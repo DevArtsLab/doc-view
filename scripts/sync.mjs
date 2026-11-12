@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// sync.mjs - copy markdown from the train/ tree into public/content/ and
+// sync.mjs - copy markdown from the train/ tree into site/content/ and
 // generate viewer inputs (manifest.json, README.md index, _sidebar.md).
 //
 // Privacy model: files are private by default. Opt a doc into the public
@@ -22,7 +22,7 @@ import { basename, join, relative, resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
 const src = resolve(process.argv[2] ?? join(root, "../train"));
-const out = join(root, "public/content");
+const out = join(root, "site/content");
 const PRIVATE = "private";
 
 if (!existsSync(src)) {
