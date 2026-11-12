@@ -1,45 +1,28 @@
 #!/usr/bin/env node
-// sync.mjs - copy markdown from the train/ tree into site/content/ and
+// sync.mjs - copy markdown from source trees into site/content/ and
 // generate viewer inputs (manifest.json, README.md index, _sidebar.md).
 //
-// Privacy model: files are private by default. Opt a doc into the public
-// zone with frontmatter:  ---\nvisibility: public\n---  Everything else is
+// Privacy model: files are public by default. Opt a doc into the private
+// zone with frontmatter:  ---\nvisibility: private\n---  Private docs are
 // emitted under content/private/ (Access-gated at the edge and in the
 // Worker) and git-crypt encrypted in this repo.
 //
-// Usage: node scripts/sync.mjs [src-dir]   (default: ../train)
+// Usage: node scripts/sync.mjs   (sources are the SOURCES list below)
 
-import {
-  cpSync,
-  existsSync,
-  mkdirSync,
-  readFileSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { readdirSync, statSync } from "node:fs";
 import { basename, join, relative, resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
-const src = resolve(process.argv[2] ?? join(root, "../train"));
 const out = join(root, "site/content");
 const PRIVATE = "private";
 
-if (!existsSync(src)) {
-  console.error(`sync: source dir missing: ${src}`);
-  process.exit(1);
-}
-
-const docs = [];
-(function walk(dir) {
-  for (const entry of readdirSync(dir)) {
-    const p = join(dir, entry);
-    if (statSync(p).isDirectory()) walk(p);
-    else if (entry.endsWith(".md")) docs.push(p);
-  }
-})(src);
-
-docs.sort();
+// Source trees: dir (relative to repo root) -> prefix prepended to emitted
+// paths. Order controls sidebar grouping.
+const SOURCES = [
+  { dir: "../train", prefix: "" },
+  { dir: "../foundation", prefix: "foundation/" },
+];
 
 const FM_RE = /^---\n([\s\S]*?)\n---\n?/;
 const frontmatter = (text) => {
@@ -61,20 +44,58 @@ const titleOf = (body, p) => {
 rmSync(out, { recursive: true, force: true });
 mkdirSync(out, { recursive: true });
 
-const entries = docs.map((p) => {
-  const rel = relative(src, p).split("\\").join("/");
-  const { attrs, body } = frontmatter(readFileSync(p, "utf8"));
-  const visibility = attrs.visibility === "public" ? "public" : "private";
-  const relOut = visibility === "private" ? `${PRIVATE}/${rel}` : rel;
-  const dest = join(out, relOut);
-  mkdirSync(resolve(dest, ".."), { recursive: true });
-  writeFileSync(dest, body);
-  return { path: relOut, srcPath: rel, title: titleOf(body, p), visibility };
-});
+const entries = [];
+for (const source of SOURCES) {
+  const src = resolve(root, source.dir);
+  if (!existsSync(src)) {
+    console.log(`sync: skipping missing source ${src}`);
+    continue;
+  }
+  const docs = [];
+  (function walk(dir) {
+    for (const entry of readdirSync(dir)) {
+      const p = join(dir, entry);
+      if (statSync(p).isDirectory()) walk(p);
+      else if (entry.endsWith(".md")) docs.push(p);
+    }
+  })(src);
+  docs.sort();
+
+  for (const p of docs) {
+    const rel = source.prefix + relative(src, p).split("\\").join("/");
+    const { attrs, body } = frontmatter(readFileSync(p, "utf8"));
+    const visibility = attrs.visibility === "private" ? "private" : "public";
+    const relOut = visibility === "private" ? `${PRIVATE}/${rel}` : rel;
+    const dest = join(out, relOut);
+    mkdirSync(resolve(dest, ".."), { recursive: true });
+    writeFileSync(dest, body);
+    entries.push({
+      path: relOut,
+      srcPath: rel,
+      title: titleOf(body, p),
+      visibility,
+      group: source.prefix.replace(/\/$/, "") || "train",
+    });
+  }
+}
 
 const pub = entries.filter((e) => e.visibility === "public");
 const priv = entries.filter((e) => e.visibility === "private");
 const generated = new Date().toISOString();
+
+const groupIndex = (list, tmpl) => {
+  const groups = [...new Set(list.map((e) => e.group))];
+  return groups
+    .map(
+      (g) =>
+        `## ${g}\n\n` +
+        list
+          .filter((e) => e.group === g)
+          .map((e) => tmpl(e))
+          .join("\n"),
+    )
+    .join("\n\n");
+};
 
 // Public indexes list public docs only: private titles/paths must not leak
 // into plaintext files (repo is public; /content/manifest.json is served open).
@@ -84,11 +105,11 @@ writeFileSync(
 );
 writeFileSync(
   join(out, "README.md"),
-  ["# train", "", ...pub.map((e) => `- [${e.title}](${e.path})`), ""].join("\n"),
+  ["# train", "", groupIndex(pub, (e) => `- [${e.title}](${e.path})`), ""].join("\n"),
 );
 writeFileSync(
   join(out, "_sidebar.md"),
-  pub.map((e) => `- [${e.title}](${e.path})`).join("\n") + "\n",
+  groupIndex(pub, (e) => `- [${e.title}](${e.path})`) + "\n",
 );
 
 if (priv.length) {
@@ -106,15 +127,15 @@ if (priv.length) {
     [
       "# train (private)",
       "",
-      ...priv.map((e) => `- [${e.title}](${e.srcPath})`),
+      groupIndex(priv, (e) => `- [${e.title}](${e.srcPath})`),
       "",
     ].join("\n"),
   );
   writeFileSync(
     join(out, PRIVATE, "_sidebar.md"),
-    priv.map((e) => `- [${e.title}](${e.srcPath})`).join("\n") + "\n",
+    groupIndex(priv, (e) => `- [${e.title}](${e.srcPath})`) + "\n",
   );
 }
 
-console.log(`sync: ${pub.length} public, ${priv.length} private doc(s) from ${src}`);
+console.log(`sync: ${pub.length} public, ${priv.length} private doc(s)`);
 for (const e of entries) console.log(`  [${e.visibility}] ${e.srcPath}`);

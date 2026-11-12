@@ -34,12 +34,12 @@ run sync first.
 
 ## Public vs private
 
-Docs are **private by default**. Opt a doc into the public zone with
+Docs are **public by default**. Opt a doc into the private zone with
 frontmatter:
 
 ```markdown
 ---
-visibility: public
+visibility: private
 ---
 ```
 

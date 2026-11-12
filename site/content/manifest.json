@@ -1,4 +1,411 @@
 {
-  "generated": "2026-11-12T00:40:52.742Z",
-  "docs": []
+  "generated": "2026-11-12T01:02:30.938Z",
+  "docs": [
+    {
+      "path": "foundation/INDEX.md",
+      "srcPath": "foundation/INDEX.md",
+      "title": "foundation INDEX",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/README.md",
+      "srcPath": "foundation/README.md",
+      "title": "foundation",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/REPO_INDEX.md",
+      "srcPath": "foundation/REPO_INDEX.md",
+      "title": "REPO_INDEX.md - foundation",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/concepts/agent-model.md",
+      "srcPath": "foundation/concepts/agent-model.md",
+      "title": "Agent orchestration model",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/concepts/config-model.md",
+      "srcPath": "foundation/concepts/config-model.md",
+      "title": "Configuration, PII, and secret architecture: rationale and baseline",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/concepts/doctrine.md",
+      "srcPath": "foundation/concepts/doctrine.md",
+      "title": "Purpose and platform doctrine",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/concepts/threat-model-agentic-apps.md",
+      "srcPath": "foundation/concepts/threat-model-agentic-apps.md",
+      "title": "Threat model for agentic applications",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/concepts/threat-model-lab.md",
+      "srcPath": "foundation/concepts/threat-model-lab.md",
+      "title": "concepts/threat-model-lab.md - DevArts Lab baseline threat model (all repositories)",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/decisions/D01-client-dispatch.md",
+      "srcPath": "foundation/decisions/D01-client-dispatch.md",
+      "title": "D1. Client dispatch model",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/decisions/D02-agent-state.md",
+      "srcPath": "foundation/decisions/D02-agent-state.md",
+      "title": "D2. Agent state model",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/decisions/D03-storage-selection.md",
+      "srcPath": "foundation/decisions/D03-storage-selection.md",
+      "title": "D3. Storage selection",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/decisions/D04-config-format.md",
+      "srcPath": "foundation/decisions/D04-config-format.md",
+      "title": "D4. Configuration format and tooling",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/decisions/D05-frontend-stack.md",
+      "srcPath": "foundation/decisions/D05-frontend-stack.md",
+      "title": "D5. Frontend stack",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/decisions/D06-code-execution-isolation.md",
+      "srcPath": "foundation/decisions/D06-code-execution-isolation.md",
+      "title": "D6. Code execution isolation",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/decisions/D07-observability.md",
+      "srcPath": "foundation/decisions/D07-observability.md",
+      "title": "D7. Observability pipeline",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/decisions/D08-secrets.md",
+      "srcPath": "foundation/decisions/D08-secrets.md",
+      "title": "D8. Secrets",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/decisions/D09-identity-access.md",
+      "srcPath": "foundation/decisions/D09-identity-access.md",
+      "title": "D9. Identity and access",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/decisions/D10-cicd-release.md",
+      "srcPath": "foundation/decisions/D10-cicd-release.md",
+      "title": "D10. CI/CD and release",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/decisions/D11-design-system.md",
+      "srcPath": "foundation/decisions/D11-design-system.md",
+      "title": "D11. Design system and component distribution",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/decisions/D12-product-identity.md",
+      "srcPath": "foundation/decisions/D12-product-identity.md",
+      "title": "D12. Product identity and white-label readiness",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/decisions/D13-auth-authz.md",
+      "srcPath": "foundation/decisions/D13-auth-authz.md",
+      "title": "D13. Authentication and authorization from day one",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/decisions/D14-config-secrets.md",
+      "srcPath": "foundation/decisions/D14-config-secrets.md",
+      "title": "D14. Configuration and secret management",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/decisions/D15-model-provider.md",
+      "srcPath": "foundation/decisions/D15-model-provider.md",
+      "title": "D15. Model provider and local inference policy",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/decisions/LAB-ADR-0001-centralized-identity-layer.md",
+      "srcPath": "foundation/decisions/LAB-ADR-0001-centralized-identity-layer.md",
+      "title": "LAB-ADR-0001: Centralized identity layer, no shared auth database",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/decisions/excluded.md",
+      "srcPath": "foundation/decisions/excluded.md",
+      "title": "Deliberately excluded",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/decisions/principles.md",
+      "srcPath": "foundation/decisions/principles.md",
+      "title": "Design principles",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/guides/a6-recovery-path.md",
+      "srcPath": "foundation/guides/a6-recovery-path.md",
+      "title": "A6-RECOVERY-PATH - owner credential recovery runbook",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/guides/adr-template.md",
+      "srcPath": "foundation/guides/adr-template.md",
+      "title": "ADR template",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/guides/predevelopment.md",
+      "srcPath": "foundation/guides/predevelopment.md",
+      "title": "Pre-Development Blueprint",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/guides/project-start.md",
+      "srcPath": "foundation/guides/project-start.md",
+      "title": "Project start checklist",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/guides/security-txt.md",
+      "srcPath": "foundation/guides/security-txt.md",
+      "title": "SECURITY-TXT - vulnerability disclosure file convention (RFC 9116)",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/reference/admin-interface.md",
+      "srcPath": "foundation/reference/admin-interface.md",
+      "title": "Administrative management interface",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/reference/architecture-tiers.md",
+      "srcPath": "foundation/reference/architecture-tiers.md",
+      "title": "Reference architecture and project tiers",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/reference/audit-events.md",
+      "srcPath": "foundation/reference/audit-events.md",
+      "title": "Audit event catalog (baseline)",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/reference/cloudflare-catalog.md",
+      "srcPath": "foundation/reference/cloudflare-catalog.md",
+      "title": "Cloudflare product catalog by concern",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/reference/component-sources.md",
+      "srcPath": "foundation/reference/component-sources.md",
+      "title": "Upstream component sources",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/reference/config-open-questions.md",
+      "srcPath": "foundation/reference/config-open-questions.md",
+      "title": "Config and secrets: research strategy and open questions",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/reference/config-principles.md",
+      "srcPath": "foundation/reference/config-principles.md",
+      "title": "Config and secrets principles",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/reference/cost-model.md",
+      "srcPath": "foundation/reference/cost-model.md",
+      "title": "Cost model",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/reference/data-governance.md",
+      "srcPath": "foundation/reference/data-governance.md",
+      "title": "Data governance",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/reference/delivery-lifecycle.md",
+      "srcPath": "foundation/reference/delivery-lifecycle.md",
+      "title": "Delivery lifecycle as a durable Workflow",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/reference/environment-model.md",
+      "srcPath": "foundation/reference/environment-model.md",
+      "title": "Local parity and environment model",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/reference/glossary.md",
+      "srcPath": "foundation/reference/glossary.md",
+      "title": "Glossary",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/reference/guardrails.md",
+      "srcPath": "foundation/reference/guardrails.md",
+      "title": "Guardrails",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/reference/limits.md",
+      "srcPath": "foundation/reference/limits.md",
+      "title": "Limits and capacity cheat sheet",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/reference/market-signals.md",
+      "srcPath": "foundation/reference/market-signals.md",
+      "title": "Market signals and alignment contract",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/reference/open-questions.md",
+      "srcPath": "foundation/reference/open-questions.md",
+      "title": "Open questions",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/reference/pii-policy.md",
+      "srcPath": "foundation/reference/pii-policy.md",
+      "title": "PII in Repositories: Placeholders, Registries, and Sentinels",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/reference/platform-inventory.md",
+      "srcPath": "foundation/reference/platform-inventory.md",
+      "title": "Platform inventory: every store the lab touches",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/reference/protection-at-rest.md",
+      "srcPath": "foundation/reference/protection-at-rest.md",
+      "title": "Protection at rest",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/reference/repo-layout.md",
+      "srcPath": "foundation/reference/repo-layout.md",
+      "title": "Repository scaffold and documentation platform",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/reference/research-policy.md",
+      "srcPath": "foundation/reference/research-policy.md",
+      "title": "Research method and fact decay policy",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/reference/resolution-contract.md",
+      "srcPath": "foundation/reference/resolution-contract.md",
+      "title": "Resolution contract",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/reference/risks.md",
+      "srcPath": "foundation/reference/risks.md",
+      "title": "Risks and mitigations",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/reference/roadmap.md",
+      "srcPath": "foundation/reference/roadmap.md",
+      "title": "Phased roadmap",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/reference/secrets-tiers.md",
+      "srcPath": "foundation/reference/secrets-tiers.md",
+      "title": "Staging, production, and distributed secrets tiers",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/reference/source-register.md",
+      "srcPath": "foundation/reference/source-register.md",
+      "title": "Source register and verification log",
+      "visibility": "public",
+      "group": "foundation"
+    },
+    {
+      "path": "foundation/reference/store-layout.md",
+      "srcPath": "foundation/reference/store-layout.md",
+      "title": "Workspace store: entity-first layout (D14)",
+      "visibility": "public",
+      "group": "foundation"
+    }
+  ]
 }
