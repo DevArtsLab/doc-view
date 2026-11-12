@@ -11,6 +11,7 @@ to assets.
 ```text
 /                       -> site/viewers/<VIEWER>/index.html
 /content/**             -> synced markdown from ../train/
+/content/foundation/**  -> live proxy of DevArtsLab/foundation (GitHub raw)
 /viewers/<name>/**      -> viewer shells (static)
 ```
 
@@ -31,6 +32,12 @@ viewer: docs under `/content/`, index at `/content/manifest.json`,
 `pnpm run sync` copies `../train/**/*.md` into `site/content/` and
 regenerates `manifest.json`, `README.md`, `_sidebar.md`. `dev` and `deploy`
 run sync first.
+
+Remote sources (see `REMOTE_SOURCES` in `scripts/sync.mjs`) are **never
+copied**: sync lists them via the GitHub API for indexes only, and the
+Worker proxies `raw.githubusercontent.com` at request time, edge-cached
+5 min. `foundation/` docs marked `visibility: private` are served via
+`/content/private/foundation/` behind the same JWT gate.
 
 ## Public vs private
 

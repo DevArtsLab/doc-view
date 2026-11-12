@@ -20,6 +20,7 @@ export interface Env {
   VIEWER: string;
   ACCESS_TEAM_DOMAIN: string;
   ACCESS_AUD: string;
+  FOUNDATION_RAW_BASE: string;
 }
 
 const FILE_EXT = /\.[a-z0-9]+$/i;
@@ -29,7 +30,7 @@ const CERTS_TTL_MS = 10 * 60 * 1000;
 let certsCache: { keys: (JsonWebKey & { kid?: string })[]; at: number } | null = null;
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     if (request.method !== "GET" && request.method !== "HEAD") {
       return new Response("method not allowed", { status: 405 });
     }
@@ -54,7 +55,16 @@ export default {
       if (url.pathname === "/content/private" || url.pathname === PRIVATE_PREFIX) {
         return Response.redirect(`${url.origin}/#/private/`, 302);
       }
+      // Remote docs marked `visibility: private` gate the same way.
+      if (url.pathname.startsWith(`${PRIVATE_PREFIX}foundation/`)) {
+        return proxyFoundation(url, env, ctx);
+      }
       return env.ASSETS.fetch(request);
+    }
+
+    // Remote source: fetched live from GitHub raw, edge-cached, never copied.
+    if (url.pathname.startsWith("/content/foundation/")) {
+      return proxyFoundation(url, env, ctx);
     }
 
     if (url.pathname === "/" || !FILE_EXT.test(url.pathname)) {
@@ -67,6 +77,25 @@ export default {
     return env.ASSETS.fetch(request);
   },
 } satisfies ExportedHandler<Env>;
+
+// foundation/ lives in the public DevArtsLab/foundation repo - proxied
+// live and edge-cached 5 min so the docs are never stale-copied here.
+async function proxyFoundation(
+  url: URL,
+  env: Env,
+  ctx: ExecutionContext,
+): Promise<Response> {
+  const rel = url.pathname.replace(/^\/content\/(private\/)?foundation\//, "");
+  const cacheKey = new Request(url.toString());
+  const cached = await caches.default.match(cacheKey);
+  if (cached) return cached;
+  const res = await fetch(`${env.FOUNDATION_RAW_BASE}/${rel}`);
+  if (!res.ok) return res;
+  const out = new Response(res.body, res);
+  out.headers.set("Cache-Control", "public, max-age=300");
+  ctx.waitUntil(caches.default.put(cacheKey, out.clone()));
+  return out;
+}
 
 function b64url(s: string): Uint8Array {
   const b64 = s.replace(/-/g, "+").replace(/_/g, "/");

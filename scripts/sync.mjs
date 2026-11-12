@@ -1,6 +1,7 @@
 #!/usr/bin/env node
-// sync.mjs - copy markdown from source trees into site/content/ and
+// sync.mjs - copy markdown from local source trees into site/content/ and
 // generate viewer inputs (manifest.json, README.md index, _sidebar.md).
+// REMOTE_SOURCES are listed (never copied): the Worker proxies them live.
 //
 // Privacy model: files are public by default. Opt a doc into the private
 // zone with frontmatter:  ---\nvisibility: private\n---  Private docs are
@@ -19,9 +20,14 @@ const PRIVATE = "private";
 
 // Source trees: dir (relative to repo root) -> prefix prepended to emitted
 // paths. Order controls sidebar grouping.
-const SOURCES = [
-  { dir: "../train", prefix: "" },
-  { dir: "../foundation", prefix: "foundation/" },
+const SOURCES = [{ dir: "../train", prefix: "" }];
+
+// Remote sources are never copied: the Worker proxies GitHub raw at
+// request time (edge-cached). Sync reads the file list + frontmatter
+// only so indexes can list the docs. Keep repo/branch in sync with
+// FOUNDATION_RAW_BASE in wrangler.jsonc.
+const REMOTE_SOURCES = [
+  { repo: "DevArtsLab/foundation", branch: "v1", prefix: "foundation/" },
 ];
 
 const FM_RE = /^---\n([\s\S]*?)\n---\n?/;
@@ -73,6 +79,42 @@ for (const source of SOURCES) {
       path: relOut,
       srcPath: rel,
       title: titleOf(body, p),
+      visibility,
+      group: source.prefix.replace(/\/$/, "") || "train",
+    });
+  }
+}
+
+for (const source of REMOTE_SOURCES) {
+  const api = `https://api.github.com/repos/${source.repo}/git/trees/${source.branch}?recursive=1`;
+  const res = await fetch(api, { headers: { "user-agent": "train-docs-sync" } });
+  if (!res.ok) {
+    console.log(`sync: skipping ${source.repo} (${res.status} ${api})`);
+    continue;
+  }
+  const tree = await res.json();
+  if (tree.truncated) console.log(`sync: warning ${source.repo} tree truncated`);
+  const paths = tree.tree
+    .filter((t) => t.type === "blob" && t.path.endsWith(".md"))
+    .map((t) => t.path)
+    .sort();
+  const docs = await Promise.all(
+    paths.map(async (p) => ({
+      rel: source.prefix + p,
+      text: await (
+        await fetch(
+          `https://raw.githubusercontent.com/${source.repo}/${source.branch}/${p}`,
+        )
+      ).text(),
+    })),
+  );
+  for (const doc of docs) {
+    const { attrs, body } = frontmatter(doc.text);
+    const visibility = attrs.visibility === "private" ? "private" : "public";
+    entries.push({
+      path: visibility === "private" ? `${PRIVATE}/${doc.rel}` : doc.rel,
+      srcPath: doc.rel,
+      title: titleOf(body, doc.rel),
       visibility,
       group: source.prefix.replace(/\/$/, "") || "train",
     });
