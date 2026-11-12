@@ -36,9 +36,17 @@ export default {
 
     const url = new URL(request.url);
 
-    if (url.pathname.startsWith(PRIVATE_PREFIX)) {
+    if (
+      url.pathname === "/content/private" ||
+      url.pathname.startsWith(PRIVATE_PREFIX)
+    ) {
       const email = await verifyAccessJwt(request, env).catch(() => null);
       if (!email) return new Response("forbidden", { status: 403 });
+      // The private root is a directory, not a file: land in the viewer at
+      // the private index route instead of 404ing on missing index.html.
+      if (url.pathname === "/content/private" || url.pathname === PRIVATE_PREFIX) {
+        return Response.redirect(`${url.origin}/#/private/`, 302);
+      }
       return env.ASSETS.fetch(request);
     }
 
