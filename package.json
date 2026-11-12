@@ -1,5 +1,5 @@
 {
-  "name": "train-docs",
+  "name": "doc-view",
   "version": "1.0.0",
   "private": true,
   "description": "Markdown docs viewer for train/ content behind Cloudflare Access on train.devartslab.com",

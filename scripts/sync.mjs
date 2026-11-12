@@ -20,7 +20,7 @@ const PRIVATE = "private";
 
 // Source trees: dir (relative to repo root) -> prefix prepended to emitted
 // paths. Order controls sidebar grouping.
-const SOURCES = [{ dir: "../train", prefix: "" }];
+const SOURCES = [{ dir: "../documents", prefix: "" }];
 
 // Remote sources are never copied: the Worker proxies GitHub raw at
 // request time (edge-cached). Sync reads the file list + frontmatter

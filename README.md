@@ -10,7 +10,7 @@ to assets.
 
 ```text
 /                       -> site/viewers/<VIEWER>/index.html
-/content/**             -> synced markdown from ../train/
+/content/**             -> synced markdown from ../documents/
 /content/foundation/**  -> live proxy of DevArtsLab/foundation (GitHub raw)
 /viewers/<name>/**      -> viewer shells (static)
 ```
@@ -68,7 +68,7 @@ that starts the login flow.
 `site/content/private/` is **never committed** - it is a gitignored build
 artifact populated by sync for the deploy bundle and removed after
 `pnpm deploy`. Private source docs live in the git-crypt-encrypted
-`DevArtsLab/train-content` repo (ciphertext on GitHub; filenames still
+`DevArtsLab/documents` repo (ciphertext on GitHub; filenames still
 visible, so keep them non-sensitive). Public index files
 (`manifest.json`, `README.md`, `_sidebar.md`) list public docs only; the
 private zone keeps its own index inside `private/` (generated at sync
@@ -88,10 +88,10 @@ Local dev opens the private zone on loopback (`cf-connecting-ip` is
 
 ## Security
 
-- Private source docs live in `DevArtsLab/train-content` (public repo,
+- Private source docs live in `DevArtsLab/documents` (public repo,
   git-crypt encrypted). Unlock on a new machine:
-  `git-crypt unlock <key-path>/train-content.git-crypt.key` (key in
-  workspace store `config/projects/train-content/secrets/`).
+  `git-crypt unlock <key-path>/documents.git-crypt.key` (key in
+  workspace store `config/projects/documents/secrets/`).
 - Nothing private is committed to this repo: `site/content/private/` is
   gitignored and populated only at sync/deploy time.
 - Access app `train-docs` (self-hosted) covers
