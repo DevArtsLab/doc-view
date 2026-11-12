@@ -1,24 +1,66 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>train-docs</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
-</head>
-<body>
-  <div id="app">Loading&hellip;</div>
-  <script>
-    window.$docsify = {
-      name: 'train-docs',
-      basePath: '/content/',
-      homepage: 'README.md',
-      loadSidebar: true,
-      subMaxLevel: 2,
-      auto2top: true,
-    };
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/emoji.min.js"></script>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>train-docs</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css"
+    />
+  </head>
+  <body>
+    <div id="app">Loading&hellip;</div>
+    <script>
+      // private/manifest.json returns JSON only after Access auth (anonymous
+      // requests 302 to the login HTML). When authed, private docs are merged
+      // into the sidebar; otherwise a "Private zone" link starts the login flow.
+      function privateZone(hook) {
+        hook.ready(async () => {
+          let docs = [];
+          try {
+            const res = await fetch("/content/private/manifest.json");
+            if ((res.headers.get("content-type") || "").includes("json"))
+              docs = (await res.json()).docs;
+          } catch {}
+          const sidebar = document.querySelector(".sidebar-nav");
+          if (!sidebar) return;
+          const ul = document.createElement("ul");
+          ul.innerHTML =
+            '<li><a href="/content/private/">Private zone &#x1F512;</a></li>' +
+            docs
+              .map(
+                (d) =>
+                  `<li><a href="#/private/${d.path.replace(/\.md$/, "")}">&#x1F512; ${d.title}</a></li>`,
+              )
+              .join("");
+          sidebar.appendChild(ul);
+        });
+      }
+
+      // An unauthenticated in-app fetch to a private doc comes back as the
+      // Access login page (redirected). Escalate to a top-level navigation so
+      // the real SSO flow runs.
+      function accessRedirect(response) {
+        if (response.redirected && !response.url.includes("devartslab.com")) {
+          const route = location.hash.replace(/^#/, "");
+          if (route && route !== "/") location.href = "/content" + route + ".md";
+        }
+        return response;
+      }
+
+      window.$docsify = {
+        name: "train-docs",
+        basePath: "/content/",
+        homepage: "README.md",
+        loadSidebar: true,
+        subMaxLevel: 2,
+        auto2top: true,
+        plugins: [privateZone],
+        responseInterceptor: accessRedirect,
+      };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/emoji.min.js"></script>
+  </body>
 </html>
