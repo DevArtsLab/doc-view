@@ -1,4 +1,4 @@
-# REPO_INDEX.md - train-docs
+# REPO_INDEX.md - doc-view
 
 > Single source of truth for what lives in this repository.
 > Regenerate when files or folders are added, removed, or substantially rewritten.

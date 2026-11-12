@@ -87,7 +87,7 @@ for (const source of SOURCES) {
 
 for (const source of REMOTE_SOURCES) {
   const api = `https://api.github.com/repos/${source.repo}/git/trees/${source.branch}?recursive=1`;
-  const res = await fetch(api, { headers: { "user-agent": "train-docs-sync" } });
+  const res = await fetch(api, { headers: { "user-agent": "doc-view-sync" } });
   if (!res.ok) {
     console.log(`sync: skipping ${source.repo} (${res.status} ${api})`);
     continue;
@@ -147,7 +147,7 @@ writeFileSync(
 );
 writeFileSync(
   join(out, "README.md"),
-  ["# train", "", groupIndex(pub, (e) => `- [${e.title}](${e.path})`), ""].join("\n"),
+  ["# documents", "", groupIndex(pub, (e) => `- [${e.title}](${e.path})`), ""].join("\n"),
 );
 writeFileSync(
   join(out, "_sidebar.md"),
@@ -167,7 +167,7 @@ if (priv.length) {
   writeFileSync(
     join(out, PRIVATE, "README.md"),
     [
-      "# train (private)",
+      "# documents (private)",
       "",
       groupIndex(priv, (e) => `- [${e.title}](${e.srcPath})`),
       "",

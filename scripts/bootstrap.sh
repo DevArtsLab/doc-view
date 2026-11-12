@@ -2,7 +2,7 @@
 # Post-clone setup: link workspace-store env into the repo (D14).
 set -euo pipefail
 WS="${WORKSPACE_CONFIG:-$(cd "$(dirname "$0")/../.." && pwd)/config}"
-SLUG="train-docs"
+SLUG="doc-view"
 ENV_DIR="$WS/env/projects/$SLUG"
 mkdir -p "$ENV_DIR"
 [ -f "$ENV_DIR/.env.local" ] || touch "$ENV_DIR/.env.local"

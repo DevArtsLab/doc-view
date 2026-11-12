@@ -1,4 +1,4 @@
-# train-docs
+# doc-view
 
 > Markdown docs viewer for `train/` content on train.devartslab.com, behind Cloudflare Access.
 
@@ -29,7 +29,7 @@ viewer: docs under `/content/`, index at `/content/manifest.json`,
 
 ## Content
 
-`pnpm run sync` copies `../train/**/*.md` into `site/content/` and
+`pnpm run sync` copies `../documents/**/*.md` into `site/content/` and
 regenerates `manifest.json`, `README.md`, `_sidebar.md`. `dev` and `deploy`
 run sync first.
 

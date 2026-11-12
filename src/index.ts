@@ -1,4 +1,4 @@
-// train-docs: serve synced markdown under a pluggable viewer shell.
+// doc-view: serve synced markdown under a pluggable viewer shell.
 //
 //   /content/private/**     -> Access-JWT-gated (403 without a valid token)
 //   /                       -> /viewers/<VIEWER>/index.html

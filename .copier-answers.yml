@@ -12,6 +12,6 @@ org_domain: devartslab.com
 org_name: DevArts Lab
 secrets: []
 security_email: security@devartslab.com
-slug: train-docs
+slug: doc-view
 tracker: Linear
 

@@ -1,10 +1,10 @@
 /**
  * ============================================================================
- * train-docs - markdown docs viewer behind Cloudflare Access
+ * doc-view - markdown docs viewer behind Cloudflare Access
  * ============================================================================
  * train.devartslab.com -> Workers Static Assets
  *   /                -> viewers/<VIEWER>/index.html (plug-and-play shell)
- *   /content/**      -> synced markdown from ../train/
+ *   /content/**      -> synced markdown from ../documents/
  * ============================================================================
  */
 {

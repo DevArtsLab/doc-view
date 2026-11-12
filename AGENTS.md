@@ -1,6 +1,6 @@
 # Agent Guide
 
-train-docs - DevArts Lab project.
+doc-view - DevArts Lab project.
 
 ## Foundation
 
