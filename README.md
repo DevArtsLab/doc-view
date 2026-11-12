@@ -2,8 +2,6 @@
 
 > Markdown docs viewer for `train/` content on train.devartslab.com, behind Cloudflare Access.
 
-DevArts Lab project. Agent conventions: [AGENTS.md](AGENTS.md).
-
 ## Architecture
 
 Workers Static Assets. The Worker (`src/index.ts`) routes `/` and any
@@ -45,8 +43,8 @@ visibility: public
 ---
 ```
 
-| Zone    | Emitted to                | Served at                 | Access                          |
-| ------- | ------------------------- | ------------------------- | ------------------------------- |
+| Zone    | Emitted to              | Served at                 | Access                          |
+| ------- | ----------------------- | ------------------------- | ------------------------------- |
 | public  | `site/content/<path>`   | `/content/<path>`         | anyone                          |
 | private | `site/content/private/` | `/content/private/<path>` | Cloudflare Access JWT, else 403 |
 
@@ -54,6 +52,11 @@ Enforcement is Worker-side (`run_worker_first`), so private files 403 even
 if the Access app is missing or misconfigured. `ACCESS_AUD` (wrangler var)
 must equal the Access app's AUD tag for private requests to verify; unset
 means the private zone is closed to everyone.
+
+`/content/private/` (directory) redirects to `/#/private/` in the viewer.
+Viewers list private docs in the nav only after Access auth (they probe the
+gated `private/manifest.json`); anonymous users see a "Private zone" entry
+that starts the login flow.
 
 `site/content/private/**` is git-crypt encrypted on commit. Public index
 files (`manifest.json`, `README.md`, `_sidebar.md`) list public docs only;
@@ -65,10 +68,13 @@ doc filenames non-sensitive.
 
 ```bash
 pnpm install
-pnpm run dev       # sync + wrangler dev
+pnpm run dev       # sync + wrangler dev -> http://localhost:8787
 pnpm run deploy    # sync + wrangler deploy
 pnpm run typecheck
 ```
+
+Local dev opens the private zone on loopback (`cf-connecting-ip` is
+`127.0.0.1`/`::1`); production always verifies the JWT.
 
 ## Security
 

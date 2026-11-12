@@ -40,7 +40,14 @@ export default {
       url.pathname === "/content/private" ||
       url.pathname.startsWith(PRIVATE_PREFIX)
     ) {
-      const email = await verifyAccessJwt(request, env).catch(() => null);
+      // Local dev: wrangler dev rewrites request.url and host to the route
+      // hostname, but cf-connecting-ip stays loopback. No real client IP can
+      // be loopback, so production always verifies.
+      const email = ["127.0.0.1", "::1"].includes(
+        request.headers.get("cf-connecting-ip") ?? "",
+      )
+        ? "local-dev"
+        : await verifyAccessJwt(request, env).catch(() => null);
       if (!email) return new Response("forbidden", { status: 403 });
       // The private root is a directory, not a file: land in the viewer at
       // the private index route instead of 404ing on missing index.html.
