@@ -3,28 +3,44 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>train-docs (lite)</title>
+    <title>doc-view (lite)</title>
     <link
+      id="md-theme"
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/github-markdown-css@5/github-markdown-light.css"
     />
     <style>
+      :root {
+        --bg: #fff;
+        --fg: #1f2328;
+        --border: #e1e4e8;
+        --link: #0969da;
+      }
+      html[data-theme="dark"] {
+        --bg: #0d1117;
+        --fg: #e6edf3;
+        --border: #30363d;
+        --link: #58a6ff;
+        color-scheme: dark;
+      }
       body {
         display: flex;
         margin: 0;
         font-family: system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--fg);
       }
       nav {
         width: 260px;
         min-height: 100vh;
         padding: 1rem;
-        border-right: 1px solid #e1e4e8;
+        border-right: 1px solid var(--border);
         box-sizing: border-box;
       }
       nav a {
         display: block;
         padding: 0.25rem 0;
-        color: #0969da;
+        color: var(--link);
         text-decoration: none;
       }
       nav a.active {
@@ -35,12 +51,60 @@
         padding: 2rem;
         max-width: 860px;
       }
+      #theme-menu {
+        position: fixed;
+        top: 0.6rem;
+        right: 0.8rem;
+        z-index: 30;
+        font-size: 0.8rem;
+      }
+      #theme-menu select {
+        background: var(--bg);
+        color: var(--fg);
+        border: 1px solid var(--border);
+      }
     </style>
   </head>
   <body>
+    <label id="theme-menu">
+      Theme
+      <select id="theme-select">
+        <option value="auto">Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+    </label>
     <nav id="nav"></nav>
     <main class="markdown-body" id="doc"></main>
     <script src="https://cdn.jsdelivr.net/npm/marked@15/marked.min.js"></script>
+    <script>
+      // Theme picker: swaps the github-markdown stylesheet and flags
+      // data-theme for nav/chrome colors. "auto" follows the OS; a value
+      // saved by another viewer (e.g. docsify's "buble") resolves via system.
+      const THEME_CSS = {
+        light:
+          "https://cdn.jsdelivr.net/npm/github-markdown-css@5/github-markdown-light.css",
+        dark: "https://cdn.jsdelivr.net/npm/github-markdown-css@5/github-markdown-dark.css",
+      };
+      const themeLink = document.getElementById("md-theme");
+      const themeSel = document.getElementById("theme-select");
+      const themeMq = matchMedia("(prefers-color-scheme: dark)");
+      function applyTheme(v) {
+        const t = THEME_CSS[v] ? v : themeMq.matches ? "dark" : "light";
+        themeLink.href = THEME_CSS[t];
+        document.documentElement.dataset.theme = t;
+      }
+      const saved = localStorage.getItem("doc-view-theme");
+      themeSel.value = themeSel.querySelector(`option[value="${saved}"]`)
+        ? saved
+        : "auto";
+      applyTheme(themeSel.value);
+      themeSel.onchange = () => {
+        localStorage.setItem("doc-view-theme", themeSel.value);
+        applyTheme(themeSel.value);
+      };
+      themeMq.addEventListener("change", () => applyTheme(themeSel.value));
+    </script>
     <script type="module">
       const nav = document.getElementById("nav");
       const docEl = document.getElementById("doc");

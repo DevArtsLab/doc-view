@@ -3,14 +3,58 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>train-docs</title>
+    <title>doc-view</title>
     <link
+      id="docsify-theme"
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css"
     />
+    <style>
+      #theme-menu {
+        position: fixed;
+        top: 0.6rem;
+        right: 0.8rem;
+        z-index: 30;
+        font-size: 0.8rem;
+      }
+    </style>
   </head>
   <body>
+    <label id="theme-menu">
+      Theme
+      <select id="theme-select">
+        <option value="auto">Auto</option>
+        <option value="vue">Vue</option>
+        <option value="dark">Dark</option>
+        <option value="buble">Buble</option>
+        <option value="pure">Pure</option>
+      </select>
+    </label>
     <div id="app">Loading&hellip;</div>
+    <script>
+      // Theme picker: swaps the docsify theme stylesheet. "auto" follows
+      // prefers-color-scheme. Choice persists in localStorage (shared key,
+      // so it carries over to the lite viewer where names overlap).
+      const THEMES = {
+        vue: "https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css",
+        dark: "https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/dark.css",
+        buble: "https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/buble.css",
+        pure: "https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/pure.css",
+      };
+      const themeLink = document.getElementById("docsify-theme");
+      const themeSel = document.getElementById("theme-select");
+      const themeMq = matchMedia("(prefers-color-scheme: dark)");
+      function applyTheme(v) {
+        themeLink.href = THEMES[v === "auto" ? (themeMq.matches ? "dark" : "vue") : v];
+      }
+      themeSel.value = localStorage.getItem("doc-view-theme") || "auto";
+      applyTheme(themeSel.value);
+      themeSel.onchange = () => {
+        localStorage.setItem("doc-view-theme", themeSel.value);
+        applyTheme(themeSel.value);
+      };
+      themeMq.addEventListener("change", () => applyTheme(themeSel.value));
+    </script>
     <script>
       // private/manifest.json returns JSON only after Access auth (anonymous
       // requests 302 to the login HTML). When authed, private docs are merged
@@ -55,7 +99,7 @@
       }
 
       window.$docsify = {
-        name: "train-docs",
+        name: "doc-view",
         basePath: "/content/",
         homepage: "README.md",
         loadSidebar: true,
