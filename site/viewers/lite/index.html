@@ -41,41 +41,45 @@
     <nav id="nav"></nav>
     <main class="markdown-body" id="doc"></main>
     <script src="https://cdn.jsdelivr.net/npm/marked@15/marked.min.js"></script>
-    <script>
-      const nav = document.getElementById('nav');
-      const docEl = document.getElementById('doc');
+    <script type="module">
+      const nav = document.getElementById("nav");
+      const docEl = document.getElementById("doc");
 
       async function show(path) {
-        const res = await fetch('/content/' + path);
+        const res = await fetch("/content/" + path);
         docEl.innerHTML = res.ok
           ? marked.parse(await res.text())
-          : '<h1>404</h1><p>' + path + '</p>';
-        for (const a of nav.querySelectorAll('a'))
-          a.classList.toggle('active', a.dataset.path === path);
-        location.hash = '/' + path;
+          : "<h1>404</h1><p>" + path + "</p>";
+        for (const a of nav.querySelectorAll("a"))
+          a.classList.toggle("active", a.dataset.path === path);
+        location.hash = "/" + path;
       }
 
-      const manifests = [await (await fetch('/content/manifest.json')).json()];
+      const manifests = [await (await fetch("/content/manifest.json")).json()];
       // Private manifest sits behind Access: absent or HTML login for anonymous
       // users, merges in silently after authentication.
       try {
-        const priv = await fetch('/content/private/manifest.json');
-        if ((priv.headers.get('content-type') || '').includes('json'))
+        const priv = await fetch("/content/private/manifest.json");
+        if ((priv.headers.get("content-type") || "").includes("json"))
           manifests.push(await priv.json());
       } catch {}
 
       for (const m of manifests)
         for (const d of m.docs) {
-          const full = d.visibility === 'private' ? 'private/' + d.path : d.path;
-          const a = document.createElement('a');
-          a.href = '#/' + full;
+          const full = d.visibility === "private" ? "private/" + d.path : d.path;
+          const a = document.createElement("a");
+          a.href = "#/" + full;
           a.dataset.path = full;
-          a.textContent = d.title + (d.visibility === 'private' ? ' 🔒' : '');
+          a.textContent = d.title + (d.visibility === "private" ? " 🔒" : "");
           nav.appendChild(a);
         }
-      window.addEventListener('hashchange', () =>
-        show(location.hash.replace(/^#\//, '') || manifest.docs[0].path));
-      show(location.hash.replace(/^#\//, '') || manifest.docs[0].path);
+      const first = manifests.flatMap((m) => m.docs)[0];
+      const firstDoc =
+        first &&
+        (first.visibility === "private" ? "private/" + first.path : first.path);
+      const current = () => location.hash.replace(/^#\//, "") || firstDoc;
+      window.addEventListener("hashchange", () => current() && show(current()));
+      if (current()) show(current());
     </script>
   </body>
 </html>
